@@ -1,0 +1,6 @@
+@PRN232.Lab1.CoffeeStore.APIS_HostAddress = http://localhost:5100
+
+GET {{PRN232.Lab1.CoffeeStore.APIS_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

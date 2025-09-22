@@ -1,0 +1,31 @@
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: PRN232.Lab1.CoffeeStore.APIS/Dockerfile.Release
+    container_name: coffeestore-api
+    ports:
+      - "5000:8080"
+      - "5001:8081"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=coffeestore;Username=myuser;Password=Abc@12345
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    container_name: coffeestore-db
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: Abc@12345
+      POSTGRES_DB: coffeestore
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db-init/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  pgdata:
