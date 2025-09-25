@@ -44,24 +44,30 @@ namespace PRN232.Lab1.CoffeeStore.APIS
 
             var app = builder.Build();
 
-            // ====== Middleware ======
-            if (app.Environment.IsDevelopment())
+            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "CoffeeStore API v1");
+                    c.RoutePrefix = "swagger"; // cho phép truy cập tại /swagger
+                });
+            }
+
+            // Nếu muốn chỉ bật HTTPS khi dev
+            if (app.Environment.IsDevelopment())
+            {
                 app.UseHttpsRedirection();
             }
             else
             {
-                // Render: tin cậy header từ proxy
-                var forwardedHeaderOptions = new ForwardedHeadersOptions
+                app.UseForwardedHeaders(new ForwardedHeadersOptions
                 {
                     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-                };
-                forwardedHeaderOptions.KnownNetworks.Clear();
-                forwardedHeaderOptions.KnownProxies.Clear();
-                app.UseForwardedHeaders(forwardedHeaderOptions);
+                });
             }
+
 
             app.UseErrorHandlingMiddleware();
 
