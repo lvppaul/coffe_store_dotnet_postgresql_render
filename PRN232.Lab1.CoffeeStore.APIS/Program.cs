@@ -52,10 +52,22 @@ namespace PRN232.Lab1.CoffeeStore.APIS
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+
+                // Chỉ bật redirect HTTPS khi chạy local (Development)
+                app.UseHttpsRedirection();
             }
+            else
+            {
+                // Với Render (Production), không ép HTTPS
+                app.UseForwardedHeaders(new ForwardedHeadersOptions
+                {
+                    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                });
+            }
+
+
             app.UseErrorHandlingMiddleware();
 
-            app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
