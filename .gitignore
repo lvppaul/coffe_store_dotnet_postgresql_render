@@ -1,3 +1,7 @@
+# Ignore user secrets and configs
+appsettings.Development.json
+appsettings.Local.json
+
 # Build folders
 bin/
 obj/

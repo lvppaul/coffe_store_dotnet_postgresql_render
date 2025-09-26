@@ -20,8 +20,21 @@ namespace PRN232.Lab1.CoffeeStore.APIS
             var builder = WebApplication.CreateBuilder(args);
 
             // ====== Services ======
+            //  Load thêm appsettings.Development.json nếu môi trường là Development
+            builder.Configuration
+                   .SetBasePath(Directory.GetCurrentDirectory())
+                   .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                   .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+                   .AddEnvironmentVariables();
+
             builder.Services.AddDbContext<CoffeeStoreContext>(options =>
-                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+               options.UseNpgsql(
+                   builder.Configuration.GetConnectionString("DefaultConnection"),
+                   npgsqlOptions => npgsqlOptions.EnableRetryOnFailure()
+               )
+           );
+
+
 
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IProductService, ProductService>();
