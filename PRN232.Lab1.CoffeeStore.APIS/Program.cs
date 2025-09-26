@@ -44,9 +44,10 @@ namespace PRN232.Lab1.CoffeeStore.APIS
 
             var app = builder.Build();
 
-            //  Auto migrate mỗi lần app start
-            using (var scope = app.Services.CreateScope())
+            // ====== Auto migrate chỉ khi Development ======
+            if (app.Environment.IsDevelopment())
             {
+                using var scope = app.Services.CreateScope();
                 var db = scope.ServiceProvider.GetRequiredService<CoffeeStoreContext>();
                 db.Database.Migrate();
             }
