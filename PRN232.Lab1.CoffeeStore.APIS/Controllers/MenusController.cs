@@ -8,7 +8,7 @@ using PRN232.Lab1.CoffeeStore.Services.Interfaces;
 
 namespace PRN232.Lab1.CoffeeStore.APIS.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/menus")]
     [ApiController]
     public class MenusController : ControllerBase
     {
