@@ -8,7 +8,7 @@ using PRN232.Lab1.CoffeeStore.Services.Interfaces;
 
 namespace PRN232.Lab1.CoffeeStore.APIS.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/menus")]
     [ApiController]
     public class MenusController : ControllerBase
     {
@@ -34,6 +34,7 @@ namespace PRN232.Lab1.CoffeeStore.APIS.Controllers
         public async Task<ActionResult<MenuResponse>> GetById(int id)
         {
             var menu = await _service.GetByIdAsync(id);
+            if (menu == null) return NotFound();
             return Ok(_mapper.Map<MenuResponse>(menu));
         }
 
@@ -43,15 +44,20 @@ namespace PRN232.Lab1.CoffeeStore.APIS.Controllers
         {
             var model = _mapper.Map<MenuModel>(request);
             var created = await _service.CreateAsync(model);
-            return Ok(_mapper.Map<MenuResponse>(created));
+
+            return CreatedAtAction(nameof(GetById), new { id = created.Id },
+                _mapper.Map<MenuResponse>(created));
         }
 
         // PUT /api/menus/{id}
         [HttpPut("{id}")]
         public async Task<ActionResult<MenuResponse>> Update(int id, UpdateMenuRequest request)
         {
+            var existing = await _service.GetByIdAsync(id);
+            if (existing == null) return NotFound();
+
             var model = _mapper.Map<MenuModel>(request);
-            model.Id = id; 
+            model.Id = id;
 
             var updated = await _service.UpdateAsync(model);
             return Ok(_mapper.Map<MenuResponse>(updated));
