@@ -8,7 +8,7 @@ using PRN232.Lab1.CoffeeStore.Services.Interfaces;
 
 namespace PRN232.Lab1.CoffeeStore.APIS.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/products")]
     [ApiController]
     public class ProductController : ControllerBase
     {
@@ -40,7 +40,10 @@ namespace PRN232.Lab1.CoffeeStore.APIS.Controllers
         {
             var model = _mapper.Map<ProductModel>(request);
             var created = await _service.CreateAsync(model);
-            return Ok(_mapper.Map<ProductResponse>(created));
+
+            
+            return CreatedAtAction(nameof(GetById), new { id = created.Id },
+                _mapper.Map<ProductResponse>(created));
         }
 
         [HttpPut("{id}")]
